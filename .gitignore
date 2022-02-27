@@ -1,4 +1,4 @@
 artifacts
-result
+result/*
 .env
 scope/*
