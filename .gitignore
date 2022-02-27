@@ -1,3 +1,4 @@
 artifacts
 result
 .env
+scope/*
