@@ -30,6 +30,7 @@
 
 ### Create a .env file with the following variables
 SHODAN_API_TOKEN=""
+
 PWD=[PROJECT_DIR_PATH]
 
 ### Install docker:
