@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN go get -u github.com/tomnomnom/fff\
 && cp /go/bin/fff /usr/local/bin/fff
-COPY result/httpx /app/httpx
 
-ENTRYPOINT ["cat"]
+
+ENTRYPOINT ["fff"]
 CMD ["--help"]
