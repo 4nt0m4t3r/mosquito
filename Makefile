@@ -8,8 +8,7 @@ FILE_DOMAINS=${PWD}/scope/domains.txt
 RESULT_DIR=${PWD}/result
 SCRIPT_DIR=${PWD}/scripts
 FILE_HTTPX=${RESULT_DIR}/httpx"
-
-
+OUT_DOMAINS=${PWD}/scope/out-of-scope-domains.txt
 
 build:
 	docker build -f assetfinder.Dockerfile -t assetfinder .
@@ -23,8 +22,6 @@ build:
 	docker build -f github-dorks.Dockerfile -t github-dorks .
 	docker build -f linkfinder.Dockerfile -t linkfinder .
 	docker build -f otxurls.Dockerfile -t otxurls .
-
-
 
 run:
 	@for f in $(shell cat ${FILE_WILDCARDS});do docker run  waybackurls $${f} | grep -oE "http[s]?://[^\/]*/"  | sort -u  | grep $${f} | sed -E "s/http(s)?:\/\///g" | grep -oE ".*$${f}" | sort -u > ${RESULT_DIR}/tmp-domains-waybackurl-$${f};done
@@ -58,7 +55,8 @@ run:
 	docker run  httpx -l /app/hosts-combined.txt -silent > ${RESULT_DIR}/tmp-httpx
 	docker run  dorksploit dorksploit.py "-www" "wildcards.txt" > ${RESULT_DIR}/tmp-dorksploit
 	cat ${RESULT_DIR}/tmp-dorksploit | grep -oE "http[s]?://[^\/]*/" | sort -u > ${RESULT_DIR}/dorksploit
-	cat ${RESULT_DIR}/dorksploit ${RESULT_DIR}/tmp-httpx | sort -u > ${RESULT_DIR}/httpx && rm ${RESULT_DIR}/tmp* -f
+	cat ${RESULT_DIR}/dorksploit ${RESULT_DIR}/tmp-httpx | sort -u > ${RESULT_DIR}/tmp-2-httpx 
+	cat ${RESULT_DIR}/tmp-2-httpx | grep -vf ${OUT_DOMAINS} > ${RESULT_DIR}/httpx && rm ${RESULT_DIR}/tmp* -f
 	cat  ${RESULT_DIR}/httpx | ${SCRIPT_DIR}/fff -S -o ${RESULT_DIR}/root
 	docker build -f eyewitness.Dockerfile -t eyewitness . 
 	docker run -v ${RESULT_DIR}:/tmp/EyeWitness eyewitness -f /app/httpx --web 
