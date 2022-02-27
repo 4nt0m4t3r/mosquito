@@ -24,7 +24,7 @@ build:
 	docker build -f otxurls.Dockerfile -t otxurls .
 
 run:
-	mkdir ${RESULT_DIR}/directory_enumeration && mkdir ${RESULT_DIR}/leaks && mkdir ${RESULT_DIR}/login-cred
+	mkdir -p ${RESULT_DIR}/directory_enumeration && mkdir -p ${RESULT_DIR}/leaks && mkdir -p ${RESULT_DIR}/login-cred
 	@for f in $(shell cat ${FILE_WILDCARDS});do docker run  waybackurls $${f} | grep -oE "http[s]?://[^\/]*/"  | sort -u  | grep $${f} | sed -E "s/http(s)?:\/\///g" | grep -oE ".*$${f}" | sort -u > ${RESULT_DIR}/tmp-domains-waybackurl-$${f};done
 	docker run  dorksploit dorksploit.py "intitle:Index Of" "wildcards.txt" > ${RESULT_DIR}/indexof-dorksploit
 	docker run  dorksploit dorksploit.py "filetype:pdf" "wildcards.txt" > ${RESULT_DIR}/pdf-dorksploit
